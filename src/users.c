@@ -259,8 +259,8 @@ int sepol_user_modify(sepol_handle_t * handle,
 		name = NULL;
 
 		/* Expand roles */
-		if (role_set_expand
-		    (&usrdatum->roles, &usrdatum->cache, policydb, NULL)) {
+		if (role_set_expand(&usrdatum->roles, &usrdatum->cache,
+				    policydb, NULL, NULL)) {
 			ERR(handle, "unable to expand role set");
 			goto err;
 		}
@@ -284,7 +284,7 @@ int sepol_user_modify(sepol_handle_t * handle,
 	return STATUS_ERR;
 }
 
-int sepol_user_exists(sepol_handle_t * handle,
+int sepol_user_exists(sepol_handle_t * handle __attribute__ ((unused)),
 		      const sepol_policydb_t * p,
 		      const sepol_user_key_t * key, int *response)
 {
@@ -301,7 +301,7 @@ int sepol_user_exists(sepol_handle_t * handle,
 	return STATUS_SUCCESS;
 }
 
-int sepol_user_count(sepol_handle_t * handle,
+int sepol_user_count(sepol_handle_t * handle __attribute__ ((unused)),
 		     const sepol_policydb_t * p, unsigned int *response)
 {
 
