@@ -111,6 +111,20 @@ typedef struct class_datum {
 	symtab_t permissions;	/* class-specific permission symbol table */
 	constraint_node_t *constraints;	/* constraints on class permissions */
 	constraint_node_t *validatetrans;	/* special transition rules */
+/* Options how a new object user and role should be decided */
+#define DEFAULT_SOURCE		1
+#define DEFAULT_TARGET		2
+	char default_user;
+	char default_role;
+	char default_type;
+/* Options how a new object range should be decided */
+#define DEFAULT_SOURCE_LOW	1
+#define DEFAULT_SOURCE_HIGH	2
+#define DEFAULT_SOURCE_LOW_HIGH	3
+#define DEFAULT_TARGET_LOW	4
+#define DEFAULT_TARGET_HIGH	5
+#define DEFAULT_TARGET_LOW_HIGH	6
+	char default_range;
 } class_datum_t;
 
 /* Role attributes */
@@ -246,6 +260,9 @@ typedef struct avrule {
 	class_perm_node_t *perms;
 	unsigned long line;	/* line number from policy.conf where
 				 * this rule originated  */
+	/* source file name and line number (e.g. .te file) */
+	char *source_filename;
+	unsigned long source_line;
 	struct avrule *next;
 } avrule_t;
 
@@ -667,10 +684,13 @@ extern int policydb_set_target_platform(policydb_t *p, int platform);
 #define POLICYDB_VERSION_BOUNDARY	24
 #define POLICYDB_VERSION_FILENAME_TRANS	25
 #define POLICYDB_VERSION_ROLETRANS	26
+#define POLICYDB_VERSION_NEW_OBJECT_DEFAULTS	27
+#define POLICYDB_VERSION_DEFAULT_TYPE	28
+#define POLICYDB_VERSION_CONSTRAINT_NAMES	29
 
 /* Range of policy versions we understand*/
 #define POLICYDB_VERSION_MIN	POLICYDB_VERSION_BASE
-#define POLICYDB_VERSION_MAX	POLICYDB_VERSION_ROLETRANS
+#define POLICYDB_VERSION_MAX	POLICYDB_VERSION_CONSTRAINT_NAMES
 
 /* Module versions and specific changes*/
 #define MOD_POLICYDB_VERSION_BASE		4
@@ -686,9 +706,12 @@ extern int policydb_set_target_platform(policydb_t *p, int platform);
 #define MOD_POLICYDB_VERSION_ROLETRANS		12
 #define MOD_POLICYDB_VERSION_ROLEATTRIB		13
 #define MOD_POLICYDB_VERSION_TUNABLE_SEP	14
+#define MOD_POLICYDB_VERSION_NEW_OBJECT_DEFAULTS	15
+#define MOD_POLICYDB_VERSION_DEFAULT_TYPE	16
+#define MOD_POLICYDB_VERSION_CONSTRAINT_NAMES  17
 
 #define MOD_POLICYDB_VERSION_MIN MOD_POLICYDB_VERSION_BASE
-#define MOD_POLICYDB_VERSION_MAX MOD_POLICYDB_VERSION_TUNABLE_SEP
+#define MOD_POLICYDB_VERSION_MAX MOD_POLICYDB_VERSION_CONSTRAINT_NAMES
 
 #define POLICYDB_CONFIG_MLS    1
 

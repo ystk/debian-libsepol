@@ -59,6 +59,52 @@ extern int sepol_compute_av_reason(sepol_security_id_t ssid,
 				   unsigned int *reason);
 
 /*
+ * Same as above, but also returns the constraint expression calculations
+ * whether allowed or denied in a buffer. This buffer is allocated by
+ * this call and must be free'd by the caller using free(3). The contraint
+ * buffer will contain any constraints in infix notation.
+ * If the SHOW_GRANTED flag is set it will show granted and denied
+ * constraints. The default is to show only denied constraints.
+ */
+#define SHOW_GRANTED 1
+extern int sepol_compute_av_reason_buffer(sepol_security_id_t ssid,
+				   sepol_security_id_t tsid,
+				   sepol_security_class_t tclass,
+				   sepol_access_vector_t requested,
+				   struct sepol_av_decision *avd,
+				   unsigned int *reason,
+				   char **reason_buf,
+				   unsigned int flags);
+
+/*
+ * Returns the mls/validatetrans constraint expression calculations in
+ * a buffer that must be free'd by the caller using free(3).
+ * If the SHOW_GRANTED flag is set it will show granted and denied
+ * mls/validatetrans (the default is to show only those denied).
+ */
+extern int sepol_validate_transition_reason_buffer(sepol_security_id_t oldsid,
+					sepol_security_id_t newsid,
+					sepol_security_id_t tasksid,
+					sepol_security_class_t tclass,
+					char **reason_buf,
+					unsigned int flags);
+
+/*
+ * Return a class ID associated with the class string representation
+ * specified by `class_name'.
+ */
+extern int sepol_string_to_security_class(const char *class_name,
+					sepol_security_class_t  *tclass);
+
+/*
+ * Return a permission av bit associated with tclass and the string
+ * representation of the `perm_name'.
+ */
+extern int sepol_string_to_av_perm(sepol_security_class_t tclass,
+					const char *perm_name,
+					sepol_access_vector_t *av);
+
+/*
  * Compute a SID to use for labeling a new object in the 
  * class `tclass' based on a SID pair.  
  */

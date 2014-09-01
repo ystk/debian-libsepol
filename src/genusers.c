@@ -1,11 +1,16 @@
 #include <stdio.h>
-#include <stdio_ext.h>
+
 #include <stdlib.h>
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
 
 #include <sepol/policydb/policydb.h>
+
+#ifndef DARWIN
+#include <stdio_ext.h>
+#endif
+
 #include <stdarg.h>
 
 #include "debug.h"
@@ -41,9 +46,19 @@ static int load_users(struct policydb *policydb, const char *path)
 	fp = fopen(path, "r");
 	if (fp == NULL)
 		return -1;
-	__fsetlocking(fp, FSETLOCKING_BYCALLER);
 
+#ifdef DARWIN
+	if ((buffer = (char *)malloc(255 * sizeof(char))) == NULL) {
+	  ERR(NULL, "out of memory");
+	  return -1;
+	}
+
+	while(fgets(buffer, 255, fp) != NULL) {
+#else
+	__fsetlocking(fp, FSETLOCKING_BYCALLER);
 	while ((nread = getline(&buffer, &len, fp)) > 0) {
+#endif
+
 		lineno++;
 		if (buffer[nread - 1] == '\n')
 			buffer[nread - 1] = 0;
@@ -77,22 +92,32 @@ static int load_users(struct policydb *policydb, const char *path)
 		} else {
 			char *id = strdup(q);
 
-			/* Adding a new user definition. */
-			usrdatum =
-			    (user_datum_t *) malloc(sizeof(user_datum_t));
-			if (!id || !usrdatum) {
+			if (!id) {
 				ERR(NULL, "out of memory");
 				free(buffer);
 				fclose(fp);
 				return -1;
 			}
-			memset(usrdatum, 0, sizeof(user_datum_t));
+
+			/* Adding a new user definition. */
+			usrdatum = malloc(sizeof(user_datum_t));
+			if (!usrdatum) {
+				ERR(NULL, "out of memory");
+				free(buffer);
+				free(id);
+				fclose(fp);
+				return -1;
+			}
+
+			user_datum_init(usrdatum);
 			usrdatum->s.value = ++policydb->p_users.nprim;
-			ebitmap_init(&usrdatum->roles.roles);
 			if (hashtab_insert(policydb->p_users.table,
 					   id, (hashtab_datum_t) usrdatum)) {
 				ERR(NULL, "out of memory");
 				free(buffer);
+				free(id);
+				user_datum_destroy(usrdatum);
+				free(usrdatum);
 				fclose(fp);
 				return -1;
 			}
