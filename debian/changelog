@@ -1,3 +1,48 @@
+libsepol (2.3-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release
+  * debian/control: Mark -dev package as Multi-arch: same. (Closes: #738049)
+  * debian/control: Bump Standards-Version to 3.9.5 (no further changes)
+
+ -- Laurent Bigonville <bigon@debian.org>  Tue, 13 May 2014 17:35:24 +0200
+
+libsepol (2.2-1) unstable; urgency=low
+
+  * Team upload.
+  * New upstream release
+    - Drop debian/patches/fix-pc-file.patch: Merged upstream
+  * debian/control: Bump Standards-Version to 3.9.4 (no further changes)
+  * debian/control: Use canonical URL for VCS-Git field
+
+ -- Laurent Bigonville <bigon@debian.org>  Fri, 01 Nov 2013 13:02:59 +0100
+
+libsepol (2.1.9-2) unstable; urgency=low
+
+  * Team upload.
+  * debian/rules: Really fix cross-compilation (Closes: #688878)
+
+ -- Laurent Bigonville <bigon@debian.org>  Mon, 20 May 2013 16:21:35 +0200
+
+libsepol (2.1.9-1) unstable; urgency=low
+
+  * Team upload.
+  * New Upstream release
+  * debian/rules: Automatically chose host gcc used when cross-compiling
+    (Closes: #688878)
+
+ -- Laurent Bigonville <bigon@debian.org>  Thu, 09 May 2013 15:12:53 +0200
+
+libsepol (2.1.8-1) experimental; urgency=low
+
+  * Team upload.
+  * New Upstream release
+  * debian/gbp.conf: Change default git-buildpackage build-directory and the
+    debian-branch to "debian" instead of "upstream"
+  * debian/watch: Fix watch file URL
+
+ -- Laurent Bigonville <bigon@debian.org>  Tue, 25 Sep 2012 22:46:14 +0200
+
 libsepol (2.1.4-3) unstable; urgency=low
 
   * Team upload.
